@@ -1,7 +1,19 @@
-import {Button, Card, CardActions, CardContent, CardMedia, Collapse, IconButton, Typography} from "@mui/material";
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Collapse,
+    IconButton, Snackbar,
+    Typography
+} from "@mui/material";
+
+import MuiAlert from '@mui/material/Alert';
 import * as React from "react";
 import PropTypes from "prop-types";
 import {styled} from "@mui/material/styles";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -16,8 +28,27 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function ProductCard({ product, addToOrder, removeFromOrder}) {
     const [expanded, setExpanded] = React.useState(false);
+    const [notify, setNotify] = React.useState(false);
+
+    const handleAddButton = (e) => {
+        addToOrder(e);
+        setNotify(true);
+    };
+
+    const handleNotifyClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setNotify(false);
+    };
+
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
@@ -25,12 +56,6 @@ export default function ProductCard({ product, addToOrder, removeFromOrder}) {
     const costSecondary = Math.floor((product.cost - Math.floor(product.cost)) * 100)
     if (costSecondary > 1) {
         costString = `${costString} ${costSecondary} к.`
-    }
-    var actions
-    if (product.qty === undefined || product.qty === 0) {
-        actions = <Button size="small" startIcon={<AddOutlinedIcon />} onClick={addToOrder.bind(this, product)}>Добавить</Button>
-    } else {
-        actions
     }
 
     return (
@@ -56,9 +81,14 @@ export default function ProductCard({ product, addToOrder, removeFromOrder}) {
                         {product.description}
                     </Typography>
                 </Collapse>
+                <Snackbar open={notify} autoHideDuration={1000} onClose={handleNotifyClose}>
+                    <Alert onClose={handleNotifyClose} icon={<AddShoppingCartIcon/>} severity="success" sx={{ width: '100%' }}>
+                        Добавлено в корзину
+                    </Alert>
+                </Snackbar>
             </CardContent>
             <CardActions disableSpacing>
-                {{actions}}
+                <Button size="small" startIcon={<AddOutlinedIcon />} onClick={handleAddButton.bind(this, product)}>Добавить</Button>
                 <Typography variant="button" display="flex">
                     {costString}
                 </Typography>

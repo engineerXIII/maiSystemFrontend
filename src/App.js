@@ -66,6 +66,7 @@ function App() {
         const findIndex = orderList.findIndex(orderItem => {
             return orderItem.ItemId === product.product_id
         })
+        console.log(orderList)
         if (findIndex !== -1) {
             if (orderList[findIndex].qty > 1) {
                 orderList[findIndex].qty -= 1
@@ -80,8 +81,9 @@ function App() {
     }
     const addProductToOrder = (product) => {
         const findIndex = orderList.findIndex(orderItem => {
-            return orderItem.ItemId === product.product_id
+            return orderItem.item_id === product.product_id
         })
+        console.log(orderList)
         if (findIndex === -1) {
             orderList.push({
                 item_id: product.product_id,
@@ -115,7 +117,7 @@ function App() {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={tabIndex} index={0}>
-                        <ProductPage orderList={orderList} addProductToOrder={addProductToOrder} removeProductFromOrder={removeProductFromOrder}/>
+                        <ProductPage addProductToOrder={addProductToOrder} removeProductFromOrder={removeProductFromOrder}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={1}>
                         Item Two

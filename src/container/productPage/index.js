@@ -5,7 +5,6 @@ import {alpha, styled} from "@mui/material/styles";
 import {InputBase, Pagination} from "@mui/material";
 import Container from "@mui/material/Container";
 import Stack from '@mui/material/Stack';
-import {v4 as uuidv4} from 'uuid';
 import {useEffect, useState} from "react";
 import axios from "axios";
 
@@ -53,17 +52,9 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     },
 }));
 
-
-
-const v4options = {
-    random: [
-        0x10, 0x91, 0x56, 0xbe, 0xc4, 0xfb, 0xc1, 0xea, 0x71, 0xb4, 0xef, 0xe1, 0x67, 0x1c, 0x58, 0x36,
-    ],
-};
-
 var productList = [
     {
-        "product_id": uuidv4(v4options),
+        "product_id": crypto.randomUUID(),
         "product_name": "Test name",
         "color": "Red",
         "factory": "Loh",
@@ -71,7 +62,7 @@ var productList = [
         "cost": 123.4
     },
     {
-        "product_id": uuidv4(v4options),
+        "product_id": crypto.randomUUID(),
         "product_name": "Test name",
         "color": "Blue",
         "factory": "China",
@@ -79,7 +70,7 @@ var productList = [
         "cost": 12345.5
     },
     {
-        "product_id": uuidv4(v4options),
+        "product_id": crypto.randomUUID(),
         "product_name": "Test name",
         "color": "Black",
         "factory": "Test",
@@ -87,7 +78,7 @@ var productList = [
         "cost": 12.0
     },
     {
-        "product_id": uuidv4(v4options),
+        "product_id": crypto.randomUUID(),
         "product_name": "Test name",
         "color": "Blue",
         "factory": "China",
@@ -95,7 +86,7 @@ var productList = [
         "cost": 12345.5
     },
     {
-        "product_id": uuidv4(v4options),
+        "product_id": crypto.randomUUID(),
         "product_name": "Test name",
         "color": "Black",
         "factory": "Test",
@@ -113,7 +104,7 @@ const productQuery = {
     Products: productList
 }
 
-export default function ProductPage({orderList, addProductToOrder, removeProductFromOrder}){
+export default function ProductPage({addProductToOrder, removeProductFromOrder}){
     const [productPage, setProductPage] = useState({
         TotalCount: 10,
         TotalPages: 1,
@@ -125,16 +116,6 @@ export default function ProductPage({orderList, addProductToOrder, removeProduct
 
     useEffect(() => {
         setTimeout(() => {
-            productQuery.Products.forEach((product) => {
-                const  findIndex = orderList.findIndex((item) => {
-                    return item.item_id === product.product_id
-                })
-                if (findIndex > -1) {
-                    product.qty = orderList[findIndex]
-                } else {
-                    product.qty = 0
-                }
-            })
             setProductPage(productQuery);
         }, 1000)
         // const apiUrl = 'http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
@@ -142,7 +123,8 @@ export default function ProductPage({orderList, addProductToOrder, removeProduct
         //     const allPersons = resp.data;
         //     setProductPage(allPersons);
         // });
-    }, [setProductPage, orderList]);
+    }, [setProductPage]);
+
 
     return(
         <Container>
