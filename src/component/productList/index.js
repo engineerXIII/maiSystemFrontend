@@ -4,12 +4,12 @@ import * as React from "react";
 import PropTypes from "prop-types";
 
 
-export default function ProductList({items, addProductToOrder}) {
+export default function ProductList({items, addProductToCart}) {
     const gridItems = [];
     if (items.length !== 0) {
         items.forEach((product) => {
             gridItems.push(<Grid item md={3}>
-                <ProductCard product={product} addToOrder={addProductToOrder}/>
+                <ProductCard product={product} addToCart={addProductToCart}/>
             </Grid>)
         })
     } else {
@@ -23,5 +23,5 @@ export default function ProductList({items, addProductToOrder}) {
 ProductList.propTypes = {
     children: PropTypes.node,
     items: PropTypes.arrayOf(PropTypes.object),
-    addProductToOrder: PropTypes.func.isRequired,
+    addProductToCart: PropTypes.func.isRequired,
 };

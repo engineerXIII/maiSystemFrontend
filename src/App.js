@@ -11,7 +11,9 @@ import {
     Tabs,
     Typography
 } from "@mui/material";
+
 import ProductPage from "./container/productPage";
+import CartPage from "./container/cartPage";
 
 const darkTheme = createTheme({
     palette: {
@@ -55,47 +57,48 @@ function a11yProps(index) {
 function App() {
 
     const [tabIndex, setTabIndex] = React.useState(0);
-    const [orderList, setOrderList] = React.useState([]);
+    const [cartList, setCartList] = React.useState([]);
 
     const handleChange = (event, newTabIndex) => {
         setTabIndex(newTabIndex);
     };
 
 
-    const removeProductFromOrder = (product) => {
-        const findIndex = orderList.findIndex(orderItem => {
-            return orderItem.ItemId === product.product_id
+    const removeProductFromCart = (product) => {
+        const findIndex = cartList.findIndex(cartItem => {
+            return cartItem.ItemId === product.product_id
         })
-        console.log(orderList)
+        console.log(cartList)
         if (findIndex !== -1) {
-            if (orderList[findIndex].qty > 1) {
-                orderList[findIndex].qty -= 1
-                orderList[findIndex].sum -= orderList[findIndex].cost
-                setOrderList(orderList)
+            if (cartList[findIndex].qty > 1) {
+                cartList[findIndex].qty -= 1
+                cartList[findIndex].sum -= cartList[findIndex].cost
+                setCartList(cartList)
             } else {
-                setOrderList(orderList.filter((item) => {
+                setCartList(cartList.filter((item) => {
                     return item.item_id !== product.product_id
                 }))
             }
         }
     }
-    const addProductToOrder = (product) => {
-        const findIndex = orderList.findIndex(orderItem => {
-            return orderItem.item_id === product.product_id
+    const addProductToCart = (product) => {
+        const findIndex = cartList.findIndex(cartItem => {
+            return cartItem.item_id === product.product_id
         })
-        console.log(orderList)
+        console.log(cartList)
         if (findIndex === -1) {
-            orderList.push({
+            cartList.push({
                 item_id: product.product_id,
+                product: product,
                 cost: product.cost,
                 qty: 1,
                 sum: product.cost
             })
         } else {
-            orderList[findIndex].qty += 1;
-            orderList[findIndex].sum += orderList[findIndex].cost;
+            cartList[findIndex].qty += 1;
+            cartList[findIndex].sum += cartList[findIndex].cost;
         }
-        setOrderList(orderList)
+        setCartList(cartList)
     }
 
     return (<ThemeProvider theme={darkTheme}>
@@ -117,10 +120,10 @@ function App() {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={tabIndex} index={0}>
-                        <ProductPage addProductToOrder={addProductToOrder}/>
+                        <ProductPage addProductToCart={addProductToCart}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={1}>
-                        Item Two
+                        <CartPage items={cartList}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={2}>
                         Item Three

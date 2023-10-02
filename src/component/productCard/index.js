@@ -32,12 +32,12 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ProductCard({ product, addToOrder}) {
+export default function ProductCard({ product, addToCart}) {
     const [expanded, setExpanded] = React.useState(false);
     const [notify, setNotify] = React.useState(false);
 
     const handleAddButton = (e) => {
-        addToOrder(e);
+        addToCart(e);
         setNotify(true);
     };
 
