@@ -117,7 +117,7 @@ function App() {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={tabIndex} index={0}>
-                        <ProductPage addProductToOrder={addProductToOrder} removeProductFromOrder={removeProductFromOrder}/>
+                        <ProductPage addProductToOrder={addProductToOrder}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={1}>
                         Item Two

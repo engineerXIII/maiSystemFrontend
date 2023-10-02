@@ -32,7 +32,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ProductCard({ product, addToOrder, removeFromOrder}) {
+export default function ProductCard({ product, addToOrder}) {
     const [expanded, setExpanded] = React.useState(false);
     const [notify, setNotify] = React.useState(false);
 
@@ -52,6 +52,7 @@ export default function ProductCard({ product, addToOrder, removeFromOrder}) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
     var costString = `${Math.floor(product.cost)} руб.`
     const costSecondary = Math.floor((product.cost - Math.floor(product.cost)) * 100)
     if (costSecondary > 1) {
@@ -89,7 +90,7 @@ export default function ProductCard({ product, addToOrder, removeFromOrder}) {
             </CardContent>
             <CardActions disableSpacing>
                 <Button size="small" startIcon={<AddOutlinedIcon />} onClick={handleAddButton.bind(this, product)}>Добавить</Button>
-                <Typography variant="button" display="flex">
+                <Typography variant="overline" display="flex">
                     {costString}
                 </Typography>
                 <ExpandMore

@@ -104,7 +104,7 @@ const productQuery = {
     Products: productList
 }
 
-export default function ProductPage({addProductToOrder, removeProductFromOrder}){
+export default function ProductPage({addProductToOrder}){
     const [productPage, setProductPage] = useState({
         TotalCount: 10,
         TotalPages: 1,
@@ -141,7 +141,7 @@ export default function ProductPage({addProductToOrder, removeProductFromOrder})
             <Stack spacing={2}  sx={{ alignItems: 'center', marginBottom: '1em'  }} >
                  <Pagination count={productPage.TotalPages} defaultPage={1} siblingCount={0}  color="primary" />
             </Stack>
-            <ProductList items={productPage.Products} addProductToOrder={addProductToOrder} removeProductFromOrder={removeProductFromOrder}/>
+            <ProductList items={productPage.Products} addProductToOrder={addProductToOrder}/>
         </Container>
 
     );
