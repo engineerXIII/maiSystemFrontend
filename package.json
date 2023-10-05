@@ -44,5 +44,8 @@
       "last 3 firefox version",
       "last 3 safari version"
     ]
+  },
+  "devDependencies": {
+    "@mui/x-data-grid-generator": "^6.16.0"
   }
 }

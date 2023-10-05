@@ -1,67 +1,156 @@
 import Box from "@mui/material/Box";
-import { DataGrid } from '@mui/x-data-grid';
+import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
+import {styled} from "@mui/material/styles";
+import {useState} from "react";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import {Button} from "@mui/material";
+import CustomNoRowsOverlay from "./noRowsView";
 
+export function CustomFooterStatusComponent(props) {
+    return (
+        <Box sx={{ p: 1, display: 'flex' }}>
+            <FiberManualRecordIcon
+                fontSize="small"
+                sx={{
+                    mr: 1,
+                    color: true ? '#4caf50' : '#d9182e',
+                }}
+            />
+            Всего позиций: {props.itemsCount}
+            <Button> Оформить заказ</Button>
+            <Button> Очистить корзину</Button>
+        </Box>
+    );
+}
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'firstName',
-        headerName: 'First name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'lastName',
-        headerName: 'Last name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (params) =>
-            `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    },
-];
+export default function CartPage({items, itemsSet}) {
+    const handleDeleteClick =  (id) => () => {
+        itemsSet(items.filter((item) => item.item_id !== id));
+    };
+    const handleCancelClick =  (id) => () => {
+        //itemsSet(items.filter((item) => item.item_id !== id));
+    };
 
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+    const itemsCount = items.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.qty
+    }, 0)
 
-export default function CartPage() {
+    const columns = [
+        {
+            field: 'product_name',
+            headerName: 'Продукт',
+            valueGetter: (param) => {
+                return `${param.row.product.product_name} [${param.row.product.color}]`
+            },
+            flex: 10,
+        },
+        {
+            field: 'qty',
+            headerName: 'Qty',
+            valueGetter: (param) => {
+                return param.row.qty
+            },
+            sortable: false,
+            flex: 1,
+        },
+        {
+            field: 'cost',
+            headerName: 'Стоимость',
+            valueGetter: (param) => {
+                return param.row.cost
+            },
+            sortable: false,
+            flex: 2,
+        },
+        {
+            field: 'sum',
+            headerName: 'Сумма',
+            valueGetter: (param) => {
+                return param.row.sum
+            },
+            flex: 2,
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: '',
+            flex: 1,
+            cellClassName: 'actions',
+            getActions: ({ id }) => {
+                // const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+                if (false) {
+                // if (isInEditMode) {
+                    return [
+                        // <GridActionsCellItem
+                        //     icon={<SaveIcon />}
+                        //     label="Save"
+                        //     sx={{
+                        //         color: 'primary.main',
+                        //     }}
+                        //     onClick={handleSaveClick(id)}
+                        // />,
+                        <GridActionsCellItem
+                            icon={<CancelIcon />}
+                            label="Cancel"
+                            className="textPrimary"
+                            onClick={handleCancelClick(id)}
+                            color="inherit"
+                        />,
+                    ];
+                }
+
+                return [
+                    // <GridActionsCellItem
+                    //     icon={<EditIcon />}
+                    //     label="Edit"
+                    //     className="textPrimary"
+                    //     onClick={handleEditClick(id)}
+                    //     color="inherit"
+                    // />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
+            }
+        }
+    ];
+
     return (
         <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
-                rows={rows}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
+                    footer: CustomFooterStatusComponent,
+                }}
+                slotProps={{
+                    footer: { itemsCount: itemsCount },
+                }}
+                rows={items}
                 columns={columns}
                 initialState={{
                     pagination: {
                         paginationModel: {
-                            pageSize: 5,
+                            pageSize: 100,
                         },
                     },
                 }}
-                pageSizeOptions={[5]}
+                getRowId={(item) => item.item_id}
+                autoPageSize
                 checkboxSelection
+                disableColumnFilter
+                disableColumnMenu
                 disableRowSelectionOnClick
+                hideFooterPagination
+                hideFooterRowCount
+
             />
         </Box>
     );
