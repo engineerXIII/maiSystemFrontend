@@ -51,10 +51,8 @@ function a11yProps(index) {
 }
 
 function App() {
-
     const [tabIndex, setTabIndex] = React.useState(0);
     const [cartList, setCartList] = React.useState([]);
-    const [cartCount, setCartCount] = React.useState(0);
 
     const handleChange = (event, newTabIndex) => {
         setTabIndex(newTabIndex);

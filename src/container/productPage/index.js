@@ -6,8 +6,8 @@ import {InputBase, Pagination} from "@mui/material";
 import Container from "@mui/material/Container";
 import Stack from '@mui/material/Stack';
 import {useEffect, useState} from "react";
-import axios from "axios";
-
+import Api from "../../Api";
+import {func} from "prop-types";
 
 
 const Search = styled('div')(({theme}) => ({
@@ -52,81 +52,106 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     },
 }));
 
-var productList = [
-    {
-        "product_id": crypto.randomUUID(),
-        "product_name": "Test name",
-        "color": "Red",
-        "factory": "Loh",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
-        "cost": 123.4
-    },
-    {
-        "product_id": crypto.randomUUID(),
-        "product_name": "Test name",
-        "color": "Blue",
-        "factory": "China",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
-        "cost": 12345.5
-    },
-    {
-        "product_id": crypto.randomUUID(),
-        "product_name": "Test name",
-        "color": "Black",
-        "factory": "Test",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
-        "cost": 12.0
-    },
-    {
-        "product_id": crypto.randomUUID(),
-        "product_name": "Test name",
-        "color": "Blue",
-        "factory": "China",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
-        "cost": 12345.5
-    },
-    {
-        "product_id": crypto.randomUUID(),
-        "product_name": "Test name",
-        "color": "Black",
-        "factory": "Test",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
-        "cost": 12.0
-    }
-];
+// var productList = [
+//     {
+//         "product_id": crypto.randomUUID(),
+//         "product_name": "Test name",
+//         "color": "Red",
+//         "factory": "Loh",
+//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
+//         "cost": 123.4
+//     },
+//     {
+//         "product_id": crypto.randomUUID(),
+//         "product_name": "Test name",
+//         "color": "Blue",
+//         "factory": "China",
+//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
+//         "cost": 12345.5
+//     },
+//     {
+//         "product_id": crypto.randomUUID(),
+//         "product_name": "Test name",
+//         "color": "Black",
+//         "factory": "Test",
+//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
+//         "cost": 12.0
+//     },
+//     {
+//         "product_id": crypto.randomUUID(),
+//         "product_name": "Test name",
+//         "color": "Blue",
+//         "factory": "China",
+//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
+//         "cost": 12345.5
+//     },
+//     {
+//         "product_id": crypto.randomUUID(),
+//         "product_name": "Test name",
+//         "color": "Black",
+//         "factory": "Test",
+//         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies erat sit amet nibh consequat posuere eu quis nulla. Nunc placerat est ut ipsum dapibus, elementum suscipit purus tincidunt. Vivamus nisi nulla, posuere eget enim sed, varius aliquet lacus. In dictum felis nisi, in vehicula mauris feugiat eget. Proin consequat purus eu nibh ullamcorper sollicitudin a fringilla libero. Sed vitae turpis sollicitudin, porttitor elit sit amet, finibus quam.",
+//         "cost": 12.0
+//     }
+// ];
+//
+// const productQuery = {
+//     TotalCount: 10,
+//     TotalPages: 1,
+//     Page: 1,
+//     size: 10,
+//     HasMore: false,
+//     products: productList
+// }
 
-const productQuery = {
-    TotalCount: 10,
-    TotalPages: 1,
-    Page: 1,
-    Size: 10,
-    HasMore: false,
-    Products: productList
-}
-
-export default function ProductPage({addProductToCart}){
+export default function ProductPage({addProductToCart}) {
     const [productPage, setProductPage] = useState({
         TotalCount: 10,
         TotalPages: 1,
         Page: 1,
-        Size: 10,
-        HasMore: false,
-        Products: []
+        size: 10,
+        has_more: false,
+        products: []
     });
+    function GetProduct () {
+        Api({
+            method: 'get',
+            url: '/api/v1/product',
+            params: {
+                size: 10
+            },
+        }).then(function (response) {
+            setProductPage(response.data)
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
+    function SearchProduct (name) {
+        if (name !== "") {
+            Api({
+                method: 'get',
+                url: '/api/v1/product/search',
+                params: {
+                    name: name
+                },
+            }).then(function (response) {
+                setProductPage(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        } else {
+            GetProduct()
+        }
+    }
 
     useEffect(() => {
-        setTimeout(() => {
-            setProductPage(productQuery);
-        }, 1000)
-        // const apiUrl = 'http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
-        // axios.get(apiUrl).then((resp) => {
-        //     const allPersons = resp.data;
-        //     setProductPage(allPersons);
-        // });
-    }, [setProductPage]);
+       GetProduct()
+    }, []);
 
 
-    return(
+    return (
         <Container>
             <Search sx={{marginBottom: '1em'}}>
                 <SearchIconWrapper>
@@ -136,12 +161,15 @@ export default function ProductPage({addProductToCart}){
                     // onChange={(e) => () => (e.target.checked)}
                     placeholder="Поиск…"
                     inputProps={{'aria-label': 'search'}}
+                    onChange={function (e) {
+                        SearchProduct(e.target.value)
+                    }}
                 />
             </Search>
-            <Stack spacing={2}  sx={{ alignItems: 'center', marginBottom: '1em'  }} >
-                 <Pagination count={productPage.TotalPages} defaultPage={1} siblingCount={0}  color="primary" />
+            <Stack spacing={2} sx={{alignItems: 'center', marginBottom: '1em'}}>
+                <Pagination count={productPage.TotalPages} defaultPage={1} siblingCount={0} color="primary"/>
             </Stack>
-            <ProductList items={productPage.Products} addProductToCart={addProductToCart}/>
+            <ProductList items={productPage.products} addProductToCart={addProductToCart}/>
         </Container>
 
     );

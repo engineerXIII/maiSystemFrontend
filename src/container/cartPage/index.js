@@ -22,7 +22,7 @@ export function CustomFooterStatusComponent(props) {
             />
             Всего позиций: {props.itemsCount}
             <Button> Оформить заказ</Button>
-            <Button> Очистить корзину</Button>
+            <Button onClick={props.EmptyCart} > Очистить корзину</Button>
         </Box>
     );
 }
@@ -34,6 +34,11 @@ export default function CartPage({items, itemsSet}) {
     const handleCancelClick =  (id) => () => {
         //itemsSet(items.filter((item) => item.item_id !== id));
     };
+
+    function emptyCart () {
+        console.log("Empty called")
+        itemsSet([]);
+    }
 
     const itemsCount = items.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.qty
@@ -131,7 +136,7 @@ export default function CartPage({items, itemsSet}) {
                     footer: CustomFooterStatusComponent,
                 }}
                 slotProps={{
-                    footer: { itemsCount: itemsCount },
+                    footer: { itemsCount: itemsCount,  EmptyCart: emptyCart },
                 }}
                 rows={items}
                 columns={columns}
@@ -150,7 +155,6 @@ export default function CartPage({items, itemsSet}) {
                 disableRowSelectionOnClick
                 hideFooterPagination
                 hideFooterRowCount
-
             />
         </Box>
     );
