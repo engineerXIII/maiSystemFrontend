@@ -2,32 +2,37 @@ import Box from "@mui/material/Box";
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
 import {styled} from "@mui/material/styles";
 import {useState} from "react";
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {Button} from "@mui/material";
 import CustomNoRowsOverlay from "./noRowsView";
 
+const Div = styled('div')(({ theme }) => ({
+    ...theme.typography.button,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+}));
+
 export function CustomFooterStatusComponent(props) {
     return (
         <Box sx={{ p: 1, display: 'flex' }}>
-            <FiberManualRecordIcon
+            <Div>
+                <FiberManualRecordIcon
                 fontSize="small"
                 sx={{
                     mr: 1,
                     color: true ? '#4caf50' : '#d9182e',
                 }}
-            />
-            Всего позиций: {props.itemsCount}
-            <Button> Оформить заказ</Button>
+                />
+            Всего позиций: {props.itemsCount}</Div>
+            <Button onClick={props.MakeOrder}> Оформить заказ</Button>
             <Button onClick={props.EmptyCart} > Очистить корзину</Button>
         </Box>
     );
 }
 
-export default function CartPage({items, itemsSet}) {
+export default function CartPage({items, itemsSet, makeOrder}) {
     const handleDeleteClick =  (id) => () => {
         itemsSet(items.filter((item) => item.item_id !== id));
     };
@@ -36,7 +41,6 @@ export default function CartPage({items, itemsSet}) {
     };
 
     function emptyCart () {
-        console.log("Empty called")
         itemsSet([]);
     }
 
@@ -86,8 +90,6 @@ export default function CartPage({items, itemsSet}) {
             flex: 1,
             cellClassName: 'actions',
             getActions: ({ id }) => {
-                // const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
                 if (false) {
                 // if (isInEditMode) {
                     return [
@@ -136,7 +138,7 @@ export default function CartPage({items, itemsSet}) {
                     footer: CustomFooterStatusComponent,
                 }}
                 slotProps={{
-                    footer: { itemsCount: itemsCount,  EmptyCart: emptyCart },
+                    footer: { itemsCount: itemsCount,  EmptyCart: emptyCart, MakeOrder: makeOrder },
                 }}
                 rows={items}
                 columns={columns}

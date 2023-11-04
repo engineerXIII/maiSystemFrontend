@@ -10,6 +10,10 @@ import {Tab, Tabs, Typography} from "@mui/material";
 
 import ProductPage from "./container/productPage";
 import CartPage from "./container/cartPage";
+import OrderPage from "./container/orderPage";
+import Api from "./Api";
+import {useEffect} from "react";
+import {random} from "@mui/x-data-grid-generator";
 
 const darkTheme = createTheme({
     palette: {
@@ -49,15 +53,84 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+const useInterval = callback => {
+    const savedCallback = React.useRef();
+
+    React.useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+
+    React.useEffect(() => {
+        function tick() {
+            savedCallback.current();
+        }
+        let id = setInterval(tick, 15 * 1000);
+        return () => clearInterval(id);
+    }, []);
+};
 
 function App() {
     const [tabIndex, setTabIndex] = React.useState(0);
     const [cartList, setCartList] = React.useState([]);
+    const [orderList, setOrderList] = React.useState([]);
 
     const handleChange = (event, newTabIndex) => {
         setTabIndex(newTabIndex);
     };
+    useInterval(() => {
+        console.log("Interval called")
+        if (orderList.length > 0) {
+            var newOrder = []
+            var index = Math.floor(random(0, orderList.length))
+            console.log("Interval index", index)
+            orderList.forEach((order, i, arr )=> {
+                if (i !== index ) {
+                    newOrder.push(order)
+                }
+            })
+            var order = orderList[index]
+            Api({
+                method: 'get',
+                url: `/api/v1/order/${order.order_id}`
+            }).then(function (response) {
+                if (response.data.status !== order.status && order.status < 5) {
+                    newOrder.push(response.data)
+                    console.log(newOrder)
+                    setOrderList(newOrder)
+                }
+                console.log("Order status not change ",  response.data.status, response.data.order_id)
+            })
+            .catch(function (error) {
+                console.log("error")
+                setOrderList(newOrder)
+            })
+        }
+    });
 
+    const makeOrder = (order) => {
+        order  = {
+            'sum': 0,
+            'order_list': [],
+        }
+        cartList.forEach((item) => {
+            order.order_list.push({
+                'item_id': item.item_id,
+                'qty': item.qty,
+                'cost': item.cost
+            })
+        })
+        Api({
+            method: 'post',
+            url: '/api/v1/order/create',
+            data: order,
+        }).then(function (response) {
+            setCartList([])
+            setOrderList(orderList.concat([response.data]))
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
 
     const removeProductFromCart = (product) => {
         const findIndex = cartList.findIndex(cartItem => {
@@ -121,10 +194,10 @@ function App() {
                         <ProductPage addProductToCart={addProductToCart}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={1}>
-                        <CartPage items={cartList} itemsSet={setCartList}/>
+                        <CartPage items={cartList} itemsSet={setCartList} makeOrder={makeOrder}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={tabIndex} index={2}>
-                        Item Three
+                        <OrderPage orderList={orderList} setOrderList={setOrderList}/>
                     </CustomTabPanel>
                 </Box>
             </Container>
